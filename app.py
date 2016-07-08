@@ -1,6 +1,7 @@
 import os
 from jinja2 import Template
 from flask import Flask
+from flask import request
 
 app = Flask(__name__)
 
@@ -33,6 +34,21 @@ reject_template = Template("""
 </html>
 """)
 
+loc_reject_template = Template("""
+<html>
+  <head><title>Sorry - {{name}}</title></head>
+  <body align="center">
+    <h1>Sorry, I can only serve requests for {{location}}!</h1>
+    <br />
+    <h2>Powered by {{name}}, {{location}}</h2>
+  </body>
+</html>
+""")
+
+
+def get_location():
+    return request.args.get('loc', 'india').lower()
+
 
 @app.route("/")
 def hello():
@@ -41,7 +57,12 @@ def hello():
 
 @app.route("/add/<int:a>/<int:b>/")
 def add(a, b):
-    if identity["function"].lower() in ["addition", "all"]:
+    req_location = get_location()
+    if identity["function"].lower() not in ["addition", "all"]:
+        return reject_template.render(**identity)
+    elif identity["location"].lower() != "india" and req_location != identity["location"].lower():
+        return loc_reject_template.render(**identity)
+    else:
         values = {
             "a": a,
             "b": b,
@@ -51,13 +72,16 @@ def add(a, b):
         }
         values.update(identity)
         return ans_template.render(**values)
-    else:
-        return reject_template.render(**identity)
 
 
 @app.route("/sub/<int:a>/<int:b>/")
 def sub(a, b):
-    if identity["function"].lower() in ["subtraction", "all"]:
+    req_location = get_location()
+    if identity["function"].lower() not in ["subtraction", "all"]:
+        return reject_template.render(**identity)
+    elif identity["location"].lower() != "india" and req_location != identity["location"].lower():
+        return loc_reject_template.render(**identity)
+    else:
         values = {
             "a": a,
             "b": b,
@@ -67,13 +91,16 @@ def sub(a, b):
         }
         values.update(identity)
         return ans_template.render(**values)
-    else:
-        return reject_template.render(**identity)
 
 
 @app.route("/mul/<int:a>/<int:b>/")
 def mul(a, b):
-    if identity["function"].lower() in ["multiplication", "all"]:
+    req_location = get_location()
+    if identity["function"].lower() not in ["multiplication", "all"]:
+        return reject_template.render(**identity)
+    elif identity["location"].lower() != "india" and req_location != identity["location"].lower():
+        return loc_reject_template.render(**identity)
+    else:
         values = {
             "a": a,
             "b": b,
@@ -83,13 +110,16 @@ def mul(a, b):
         }
         values.update(identity)
         return ans_template.render(**values)
-    else:
-        return reject_template.render(**identity)
 
 
 @app.route("/div/<int:a>/<int:b>/")
 def div(a, b):
-    if identity["function"].lower() in ["division", "all"]:
+    req_location = get_location()
+    if identity["function"].lower() not in ["division", "all"]:
+        return reject_template.render(**identity)
+    elif identity["location"].lower() != "india" and req_location != identity["location"].lower():
+        return loc_reject_template.render(**identity)
+    else:
         values = {
             "a": a,
             "b": b,
@@ -99,8 +129,6 @@ def div(a, b):
         }
         values.update(identity)
         return ans_template.render(**values)
-    else:
-        return reject_template.render(**identity)
 
 
 if __name__ == "__main__":
