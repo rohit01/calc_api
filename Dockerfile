@@ -5,4 +5,4 @@ RUN        pip install -r /srv/requirements.txt
 
 EXPOSE     8000
 
-CMD ["python /srv/app.py"]
+CMD ["python", "/srv/app.py"]
